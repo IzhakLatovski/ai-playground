@@ -6,7 +6,9 @@
 
 **Architecture:** All tokens live in a single module (`lib/tokens.ts`) that both the Tailwind config and the showcase pages consume — no hex strings or font sizes are hardcoded in JSX. CSS variables in `globals.css` (swapped by a `.dark` class) power mode-aware semantic tokens. The `/design-system` route group shares a chrome layout (sidebar + topbar + mode toggle) and hosts one route per foundation.
 
-**Tech Stack:** Next.js 15 (App Router, TypeScript), Tailwind CSS v3, shadcn/ui, next-themes, lucide-react, Geist + Geist Mono via `next/font`, Vitest + @testing-library/react for tests.
+**Tech Stack:** Next.js 16 (App Router, TypeScript), **Tailwind CSS v4** (CSS-first — no `tailwind.config.ts`), shadcn/ui, next-themes, lucide-react, Geist + Geist Mono via `next/font`, Vitest + @testing-library/react for tests.
+
+> **v4 Adaptation Note.** The originally-written Task 6 ("Wire Tailwind config to tokens") is no longer needed — Tailwind v4 has no JS config file; theme config lives in CSS via `@theme inline`. The work from old Task 6 is merged into Task 7 below, which now contains the full v4 `globals.css` with `@theme inline`, `@custom-variant dark`, and `:root`/`.dark` CSS variable blocks. Task 6 is retained as a small "components.json adjustment" task, and downstream task numbering is preserved. The implementer for each task receives v4-adapted instructions directly from the controller.
 
 **Spec:** [`docs/superpowers/specs/2026-04-22-design-system-baseline-design.md`](../specs/2026-04-22-design-system-baseline-design.md)
 

@@ -24,8 +24,8 @@ The showcase page is not product UI. It is the single source of truth for anyone
 
 ## 3. Tech Stack
 
-- **Next.js 15** (App Router) — TypeScript.
-- **Tailwind CSS v3** — foundations expressed via `tailwind.config.ts` + CSS custom properties. (v3 chosen over v4 because shadcn/ui tooling is most polished there; revisit later.)
+- **Next.js 16** (App Router) — TypeScript.
+- **Tailwind CSS v4** — foundations expressed via `@theme inline` blocks + CSS custom properties directly in `app/globals.css`. No `tailwind.config.ts` file — v4 is CSS-first. shadcn/ui supports v4 natively.
 - **shadcn/ui** — initialized, using `Button` and `Card` primitives in the showcase. Theme uses our tokens, not shadcn defaults.
 - **next-themes** — light/dark/system mode with no-flash hydration.
 - **lucide-react** — icons (sidebar, mode toggle).
@@ -71,12 +71,12 @@ Info is kept as sky-blue for now. If it reads too close to the indigo primary on
 
 Two layers — the **scale** (raw hues) and the **semantic** (role-based) — so component code never hardcodes hex:
 
-**Scale tokens** (Tailwind config `theme.extend.colors`):
-- `brand-{50..950}` — the primary scale above.
-- `zinc-{50..950}` — Tailwind default.
-- Semantic hue scales if needed (`success-{500,600,...}` etc.) — but implementation mostly uses the semantic layer below.
+**Scale tokens** (declared in `@theme` block in `globals.css`):
+- `brand-{50..950}` — the primary scale above, exposed as `--color-brand-*` utilities.
+- `zinc-{50..950}` — Tailwind v4 default (already registered in the engine).
+- Semantic hue scales if needed — but implementation mostly uses the semantic layer below.
 
-**Semantic tokens** (CSS variables in `globals.css`, swapped by `.dark` class):
+**Semantic tokens** (CSS variables in `globals.css`, swapped by `.dark` class, bound to Tailwind utilities via `@theme inline`):
 - `--background`, `--foreground`
 - `--card`, `--card-foreground`
 - `--muted`, `--muted-foreground`, `--border`, `--ring`
@@ -237,7 +237,7 @@ Tailwind defaults — mobile-first. No custom breakpoints.
 - `next-themes` with `attribute="class"`, `defaultTheme="system"`, `enableSystem`.
 - Default on first visit: system preference.
 - User can override with the mode toggle in the showcase topbar — choice persists in localStorage.
-- `<html>` gets `class="dark"` when dark is active. Tailwind config uses `darkMode: 'class'`.
+- `<html>` gets `class="dark"` when dark is active. Dark mode is wired via `@custom-variant dark (&:is(.dark *));` in `globals.css`.
 - A minimal inline script in `<head>` sets the class before hydration to prevent the light-flash on reload.
 - All tokens (§4.5, §8.2) resolve via CSS variables so mode changes never require JS-driven style swaps.
 
@@ -350,10 +350,10 @@ ai-playground/
 │   │   └── breakpoint-indicator.tsx     # live viewport-width + active-bp badge
 │   ├── theme-provider.tsx               # wraps next-themes
 │   └── ui/                              # shadcn primitives (button, card)
-├── lib/
-│   ├── tokens.ts                        # single source of truth: colors, typography, spacing, radius, shadows, breakpoints
-│   └── utils.ts                         # shadcn cn() helper
-└── tailwind.config.ts                   # darkMode: 'class', extended colors/fontSize/spacing/radius/boxShadow referencing CSS vars where applicable
+└── lib/
+    ├── tokens.ts                        # single source of truth: colors, typography, spacing, radius, shadows, breakpoints
+    └── utils.ts                         # shadcn cn() helper
+# Tailwind v4: no JS config file — all theme config lives in app/globals.css via @theme inline + @custom-variant dark.
 ```
 
 `lib/tokens.ts` is the one source of truth — every showcase component reads from it, and the Tailwind config re-exports the same values. Editing a token in `tokens.ts` updates the matching showcase page without JSX edits.
@@ -363,7 +363,7 @@ ai-playground/
 ### 13.1 Adding a new foundation (e.g. motion, icons)
 
 1. Add the foundation's tokens to `lib/tokens.ts`.
-2. Add corresponding entries to `tailwind.config.ts` and/or `globals.css` as needed.
+2. Add corresponding entries to `app/globals.css` (`@theme inline` block + `:root`/`.dark` CSS variables if the tokens need light/dark swaps).
 3. Create `app/design-system/<name>/page.tsx` with the showcase content.
 4. Add the entry to the sidebar group.
 
