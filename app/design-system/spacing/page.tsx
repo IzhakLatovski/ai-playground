@@ -3,6 +3,12 @@ import { tokens } from '@/lib/tokens';
 import { PageSection } from '@/components/design-system/page-section';
 import { SpacingRow } from '@/components/design-system/spacing-row';
 
+// Explicit order — JS object iteration lists integer-looking keys ("0", "1", …)
+// before non-integer keys ("0.5", "1.5"), which sorts the half-steps to the end.
+const spacingOrder: Array<keyof typeof tokens.spacing> = [
+  '0', '0.5', '1', '1.5', '2', '3', '4', '5', '6', '8', '10', '12', '16', '24',
+];
+
 export default function SpacingPage() {
   return (
     <>
@@ -13,8 +19,8 @@ export default function SpacingPage() {
 
       <PageSection title="Scale">
         <div className="rounded-lg border border-border bg-card p-5 overflow-x-auto">
-          {Object.entries(tokens.spacing).map(([token, value]) => (
-            <SpacingRow key={token} token={token} value={value} />
+          {spacingOrder.map((token) => (
+            <SpacingRow key={token} token={token} value={tokens.spacing[token]} />
           ))}
         </div>
       </PageSection>

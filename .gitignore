@@ -43,3 +43,5 @@ next-env.d.ts
 # local tooling
 .superpowers/
 .claude/
+.playwright-mcp/
+qa-*.png

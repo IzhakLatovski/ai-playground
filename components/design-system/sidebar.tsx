@@ -69,7 +69,12 @@ export function Sidebar() {
         </nav>
       </aside>
 
-      {/* Mobile horizontal tab row */}
+      {/* Mobile: wordmark bar + horizontal tab row */}
+      <div className="md:hidden flex items-center border-b border-border bg-card px-4 py-3">
+        <Link href="/design-system/colors" className="text-h4 font-semibold text-primary">
+          DCR
+        </Link>
+      </div>
       <nav className="md:hidden overflow-x-auto border-b border-border bg-card">
         <div className="flex gap-2 px-4 py-3">
           {groups.flatMap((g) => g.items).map((item) => {
